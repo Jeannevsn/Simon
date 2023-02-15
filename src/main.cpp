@@ -1,38 +1,54 @@
 #include <Arduino.h>
 
-const int bt_jaune = 4, bt_vert = 17, bt_noir = 16;
-const int led_jaune = 21, led_verte = 26;
+const int bt_yellow = 4, bt_green = 17, bt_black = 16, bt_blue = 13;      // buttons initiation
+const int led_yellow = 19, led_green = 26, led_blue = 23, led_black = 25; // leds initation
+int state_led_black, state_led_yellow, state_led_blue, state_led_green;   // state leds initation
+
+void update_leds();
 
 void setup()
 {
-  pinMode(bt_jaune, INPUT);
-  pinMode(led_jaune, OUTPUT);
-  pinMode(bt_vert, INPUT);
-  pinMode(led_verte, OUTPUT);
-  pinMode(bt_noir, INPUT);
+  // pins initiation
+  pinMode(bt_yellow, INPUT);
+  pinMode(led_yellow, OUTPUT);
+  pinMode(bt_green, INPUT);
+  pinMode(led_green, OUTPUT);
+  pinMode(bt_black, INPUT);
+  pinMode(led_black, OUTPUT);
+  pinMode(bt_blue, INPUT);
+  pinMode(led_blue, OUTPUT);
+  // turn off the devil led
+  pinMode(5, OUTPUT);
+  pinMode(15, OUTPUT);
+  pinMode(14, OUTPUT);
 }
 
 void loop()
 {
-  if (digitalRead(bt_noir) == LOW)
-  {
-    digitalWrite(led_jaune, LOW);
-    digitalWrite(led_verte, LOW);
-  }
+  if (digitalRead(bt_black) == LOW)
+    state_led_black = HIGH;
+  else
+    state_led_black = LOW;
+  if (digitalRead(bt_yellow) == LOW)
+    state_led_yellow = HIGH;
+  else
+    state_led_yellow = LOW;
+  if (digitalRead(bt_green) == LOW)
+    state_led_green = HIGH;
+  else
+    state_led_green = LOW;
+  if (digitalRead(bt_blue) == LOW)
+    state_led_blue = HIGH;
+  else
+    state_led_blue = LOW;
 
-  else if (digitalRead(bt_jaune) == LOW)
-  {
-    digitalWrite(led_jaune, HIGH);
-    delay(300);
-    digitalWrite(led_verte, HIGH);
-    delay(500);
-    digitalWrite(led_jaune, LOW);
-    digitalWrite(led_verte, LOW);
-  }
-  
-  else if (digitalRead(bt_vert) == LOW)
-  {
-    digitalWrite(led_jaune, HIGH);
-    digitalWrite(led_verte, HIGH);
-  }
+  update_leds();
+}
+
+void update_leds()
+{
+  digitalWrite(led_black, state_led_black);
+  digitalWrite(led_yellow, state_led_yellow);
+  digitalWrite(led_green, state_led_green);
+  digitalWrite(led_blue, state_led_blue);
 }
