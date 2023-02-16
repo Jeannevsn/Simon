@@ -6,10 +6,11 @@ rgb_lcd lcd; // object creation
 const int bt_yellow = 4, bt_green = 17, bt_black = 16, bt_blue = 13;      // buttons initiation
 const int led_yellow = 19, led_green = 26, led_blue = 23, led_black = 25; // leds initation
 int state_led_black, state_led_yellow, state_led_blue, state_led_green;   // state leds initation
+unsigned long int timer[4] = {0};                                         // timer initiation
 
-void update_leds(); // turn on led with buttons
+void update_leds();                                                                                   // turn on led with buttons
 void posting_lcd(int state_led_black, int state_led_yellow, int state_led_blue, int state_led_green); // led state on display
-void lcd_position(String text, int column, int line, bool clear); // led state position on display
+void lcd_position(String text, int column, int line, bool clear);                                     // led state position on display
 
 void setup()
 {
@@ -26,25 +27,33 @@ void setup()
   pinMode(5, OUTPUT);
   pinMode(15, OUTPUT);
   pinMode(14, OUTPUT);
-  lcd.begin(16,2); // lcd initiation
+  lcd.begin(16, 2); // lcd initiation
 }
 
 void loop()
 {
   // ON or OFF leds
   if (digitalRead(bt_black) == LOW)
+    timer[0]= millis();
+  if (millis() < timer[0] + 500)
     state_led_black = HIGH;
   else
     state_led_black = LOW;
   if (digitalRead(bt_yellow) == LOW)
+    timer[1] = millis();
+  if (millis() < timer[1] + 500)
     state_led_yellow = HIGH;
   else
     state_led_yellow = LOW;
   if (digitalRead(bt_green) == LOW)
+    timer[2] = millis();
+  if (millis() < timer[2] + 500)
     state_led_green = HIGH;
   else
     state_led_green = LOW;
   if (digitalRead(bt_blue) == LOW)
+    timer[3] = millis();
+  if (millis() < timer[3] + 500)
     state_led_blue = HIGH;
   else
     state_led_blue = LOW;
@@ -72,8 +81,8 @@ void lcd_position(String text, int column, int line, bool clear)
 
 void posting_lcd(int state_led_black, int state_led_yellow, int state_led_blue, int state_led_green)
 {
-  lcd_position("BK:"+String(state_led_black), 0, 0, true);
-  lcd_position("YE:"+String(state_led_yellow), 6, 0, false);
-  lcd_position("BL:"+String(state_led_blue), 12, 0, false);
-  lcd_position("GR:"+String(state_led_green), 0, 1, false);
+  lcd_position("BK:" + String(state_led_black), 0, 0, true);
+  lcd_position("YE:" + String(state_led_yellow), 6, 0, false);
+  lcd_position("BL:" + String(state_led_blue), 12, 0, false);
+  lcd_position("GR:" + String(state_led_green), 0, 1, false);
 }
