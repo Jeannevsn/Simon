@@ -68,8 +68,9 @@ void loop()
       }
       if (i >= 5)
         i = 0;
-
-      timer_random_led = millis();
+      
+      if (millis() > timer_random_led + 800)
+        timer_random_led = millis();
     }
     lcd.setCursor(0, 0);
     lcd.printf("Tr %d,%d,%d,%d,%d", random_led_table[0], random_led_table[1], random_led_table[2], random_led_table[3], random_led_table[4]);
