@@ -61,16 +61,19 @@ void loop()
     if (millis() > timer_random_led + 500)
     {
       lcd_position("i:" + String(i), 13, 0, true);
-      i += 1;
+
       for (int j = 0; j < 4; j++)
       {
         state_led_table[j] = LOW;
       }
-      if (i >= 5)
-        i = 0;
       
       if (millis() > timer_random_led + 800)
+      {
         timer_random_led = millis();
+        i += 1;
+        if (i >= 5)
+          i = 0;
+      }
     }
     lcd.setCursor(0, 0);
     lcd.printf("Tr %d,%d,%d,%d,%d", random_led_table[0], random_led_table[1], random_led_table[2], random_led_table[3], random_led_table[4]);
