@@ -22,7 +22,7 @@ int timer_random_led;                                                     // tim
 int leds_counter = 0;                                                     // initiation of the led counter to go to the next led in the array
 int buttons_counter = 0;                                                  // initiation of the counter of the player's button presses
 int buttons_error = 0;                                                    // initiation of the counter of the player's errors
-int state;                                                                // initiation of my state variable for my state machine
+int state = 4;                                                            // initiation of my state variable for my state machine
 
 unsigned long int timer[4] = {0};                                     // timer initiation
 int led_table[4] = {led_yellow, led_blue, led_black, led_green};      // set leds table
@@ -79,7 +79,7 @@ void loop()
   switch (state)
   {
   case 0: // turn on or off the leds of the random array
-    state_led_table[random_led_table[leds_counter]] = HIGH;
+    state_led_table[random_led_table[leds_counter - 1]] = HIGH;
     update_leds();
 
     if (millis() > timer_random_led + 1500)
@@ -162,6 +162,11 @@ void loop()
     {
       state_led_table[o] = HIGH;
     }
+    break;
+
+  case 4: // wait state
+    if (digitalRead(bt_yellow) == LOW)
+      state = 0;
     break;
   }
   update_leds();
