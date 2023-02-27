@@ -18,18 +18,19 @@ rgb_lcd lcd; // object creation
 
 const int bt_yellow = 4, bt_green = 17, bt_black = 16, bt_blue = 13;      // buttons initiation
 const int led_yellow = 19, led_green = 26, led_blue = 23, led_black = 25; // leds initation
-unsigned long int timer[4] = {0};                                         // timer initiation
 int timer_random_led;                                                     // timer to turn random leds on or off
 int leds_counter = 0;                                                     // initiation of the led counter to go to the next led in the array
 int buttons_counter = 0;                                                  // initiation of the counter of the player's button presses
 int buttons_error = 0;                                                    // initiation of the counter of the player's errors
 int state;                                                                // initiation of my state variable for my state machine
 
-int led_table[4] = {led_yellow, led_blue, led_black, led_green}; // set leds table
-int button_table[4] = {bt_yellow, bt_blue, bt_black, bt_green};  // set buttons table
-int state_led_table[4];                                          // {state_led_black, state_led_yellow, state_led_blue, state_led_green}
-int random_led_table[5];                                         // the leds are drawn at random and stored in this table
-int answer_player_table[5];                                      // the leds lit by the player are stored in this table
+unsigned long int timer[4] = {0};                                     // timer initiation
+int led_table[4] = {led_yellow, led_blue, led_black, led_green};      // set leds table
+int button_table[4] = {bt_yellow, bt_blue, bt_black, bt_green};       // set buttons table
+int state_led_table[4];                                               // {state_led_black, state_led_yellow, state_led_blue, state_led_green}
+int random_led_table[5];                                              // the leds are drawn at random and stored in this table
+int answer_player_table[5];                                           // the leds lit by the player are stored in this table
+int error_table[4][3] = {{3, 1, 2}, {2, 0, 3}, {1, 3, 1}, {0, 2, 0}}; // {0 : bt_yellow, 1 : bt_blue, 2 : bt_black, 3 : bt_green}
 
 void update_leds();                                                                                   // turn on led with buttons function
 void posting_lcd(int state_led_black, int state_led_yellow, int state_led_blue, int state_led_green); // led state on display function
@@ -59,6 +60,7 @@ void setup()
   for (int m = 0; m < 5; m++)
   {
     random_led_table[m] = random(0, 4);
+    answer_player_table[m] = error_table[random_led_table[m]][buttons_error];
   }
   timer_random_led = millis();
 }
@@ -69,10 +71,9 @@ void loop()
   lcd.setCursor(0, 0);
   lcd.printf("Tr %d,%d,%d,%d,%d", random_led_table[0], random_led_table[1], random_led_table[2], random_led_table[3], random_led_table[4]);
   lcd.setCursor(0, 1);
-  lcd.printf("T %d,%d,%d,%d", state_led_table[0], state_led_table[1], state_led_table[2], state_led_table[3]);
-  lcd_position("s:" + String(state), 13, 0, false);
+  lcd.printf("Ta %d,%d,%d,%d,%d", answer_player_table[0], answer_player_table[1], answer_player_table[2], answer_player_table[3], answer_player_table[4]);
+  lcd_position("c:" + String(buttons_counter), 13, 0, false);
   lcd_position("e:" + String(buttons_error), 13, 1, false);
-  lcd_position("c:" + String(buttons_counter), 10, 1, false);
   delay(150);
 
   switch (state)
@@ -105,7 +106,7 @@ void loop()
       if (digitalRead(button_table[k]) == LOW)
       {
         state_led_table[k] = HIGH;
-        if (random_led_table[buttons_counter] == k)
+        if (answer_player_table[buttons_counter] == k)
         {
           buttons_counter++;
           if (buttons_counter >= 5)
@@ -129,17 +130,31 @@ void loop()
 
       if (buttons_error >= 3)
         state = 2;
+      else
+        for (int m = 0; m < 5; m++)
+        {
+          answer_player_table[m] = error_table[random_led_table[m]][buttons_error];
+        }
     }
     break;
 
   case 2: // when you make three mistakes, a new random sequence of leds starts
-    for (int m = 0; m < 5; m++)
+    if (millis() > timer_random_led + 300)
     {
-      random_led_table[m] = random(0, 4);
+      for (int o = 0; o < 4; o++)
+      {
+        state_led_table[o] = HIGH;
+      }
+      if (millis() > timer_random_led + 600)
+        timer_random_led = millis();
     }
-    timer_random_led = millis();
-    state = 0;
-    buttons_error = 0;
+    else
+    {
+      for (int o = 0; o < 4; o++)
+      {
+        state_led_table[o] = LOW;
+      }
+    }
     break;
 
   case 3: // when you win, all the leds are on
