@@ -10,16 +10,18 @@ Level 1 is the easiest and level 5 is the most difficult.
 The game is over when the player reaches level 5.
 */
 
+// library
 #include <Arduino.h>
 #include "rgb_lcd.h"
 #include <ctime>
 #include "bouton.h"
 
-rgb_lcd lcd; // object creation
+// object creation
+rgb_lcd lcd; 
 Bouton bt[4];
 
-void setup_bt(int nb_bt);
-void read_bt(int nb_bt);
+void setup_bt(int nb_bt); // initialization of the buttons
+void read_bt(int nb_bt); // reading of the buttons
 
 const int bt_yellow = 4, bt_green = 17, bt_black = 16, bt_blue = 13;      // buttons initiation
 const int led_yellow = 19, led_green = 26, led_blue = 23, led_black = 25; // leds initation
@@ -79,7 +81,7 @@ void loop()
 
   read_bt(4);
   // log information
-  if (millis() > timer_lcd + 200)
+  /*if (millis() > timer_lcd + 200)
   {
     lcd.setCursor(0, 0);
     lcd.printf("T%d,%d,%d,%d,%d", random_led_table[0], random_led_table[1], random_led_table[2], random_led_table[3], random_led_table[4]);
@@ -89,7 +91,7 @@ void loop()
     lcd_position("e:" + String(buttons_error), 13, 1, false);
     lcd_position("s:" + String(state), 10, 1, false);
     timer_lcd = millis();
-  }
+  }*/
 
   switch (state)
   {
@@ -180,6 +182,7 @@ void loop()
       if (millis() > timer_random_led + 600)
         timer_random_led = millis();
     }
+    
     else
     {
       for (int o = 0; o < 4; o++)
@@ -188,6 +191,9 @@ void loop()
       }
     }
     update_leds();
+    lcd_position("LOOSER,",0,0,true);
+    lcd_position("YOU LOOSE :(",0,1,false);
+    delay(150);
     break;
 
   case 3: // when you win, all the leds are on
@@ -196,9 +202,12 @@ void loop()
       state_led_table[o] = HIGH;
     }
     update_leds();
+    lcd_position("BOSS,",0,0,true);
+    lcd_position("YOU WIN :)",0,1,false);
+    delay(150);
     break;
 
-  case 4:
+  case 4: // basic state, start of the game
     if (bt[0].click())
     {
 
@@ -213,6 +222,8 @@ void loop()
       buttons_counter = 0;
       buttons_error = 0;
       state = 0;
+      lcd_position("G M  I  P O R S ", 0, 0, true);
+      lcd_position(" A E  N  R G E S ", 0, 1, false);
     }
     break;
   }
