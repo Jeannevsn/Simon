@@ -1,3 +1,16 @@
+/* 
+Rules : 
+This mini-game is a module of the video game "Keep Talking and Nobody Explodes".
+The goal of the game is to reproduce a sequence of leds by pressing the corresponding buttons in the defusing manual.
+The game features 4 buttons and 4 leds.
+The yellow button starts the game. Then the game generates a random sequence of leds. The player must reproduce the sequence by pressing the corresponding buttons.
+If the player succeeds in the sequence, he/she moves to the next level. If the player fails, he/she must repeat the sequence.
+The game has 5 levels of difficulty.
+Level 1 is the easiest and level 5 is the most difficult.
+The game is over when the player reaches level 5.
+*/
+
+
 #include <Arduino.h>
 #include "rgb_lcd.h"
 #include <ctime>
