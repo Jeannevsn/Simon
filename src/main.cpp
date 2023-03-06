@@ -154,6 +154,7 @@ void loop()
 
         else
         {
+          level = 0;
           state = 0;
           buttons_error++;
           buttons_counter = 0;
