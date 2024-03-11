@@ -32,6 +32,15 @@ int buttons_error = 0;                                                    // ini
 int state = 4;                                                            // initiation of my state variable for my state machine
 int level = 0, level_max = 5;                                             // initiation of the level counter and level max (5)
 
+
+const int led_BT1[3]={23,22,21};
+const int led_BT2[3]={19,18,5};
+const int led_BT3[3]={17,16,4};
+const int led_BT4[3]={2,15,0};
+
+int led_table2[4][3] = {{led_BT1[0],led_BT1[1],led_BT1[2]}, {led_BT2[0],led_BT2[1],led_BT2[2]},{led_BT3[0], led_BT3[1], led_BT3[2]}, {led_BT4[0],led_BT4[1],led_BT4[2]}}; 
+
+
 unsigned long int timer[4] = {0};
 unsigned long int timer_lcd = millis();                               // timer initiation
 int led_table[4] = {led_yellow, led_blue, led_black, led_green};      // set leds table
